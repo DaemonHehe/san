@@ -35,6 +35,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
 const updateUser = asyncHandler(async (req, res) => {
   const { _id } = req.user;
+  validateMongoDbId(_id);
   try {
     const updateUser = await User.findByIdAndUpdate(
       _id,
@@ -65,6 +66,7 @@ const getAllUser = asyncHandler(async (req, res) => {
 
 const getSingleUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongoDbId(_id);
   try {
     const getSingleUser = await User.findById(id);
     res.json({
@@ -77,6 +79,7 @@ const getSingleUser = asyncHandler(async (req, res) => {
 
 const deleteUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongoDbId(_id);
   try {
     const deleteUser = await User.findByIdAndDelete(id);
     res.json({
