@@ -2,6 +2,7 @@ const { generateToken } = require("../config/jwToken");
 const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 const validateMongoDbId = require("../utils/validateMongoDbid");
+const { generateRefreshToken } = require("../config/refreshToken");
 
 const createUser = asyncHandler(async (req, res) => {
   const email = req.body.email;
@@ -20,6 +21,20 @@ const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const findUser = await User.findOne({ email });
   if (findUser && (await findUser.comparePassword(password))) {
+    const refreshToken = await generateRefreshTokenq(findUser?._id);
+    const updateUser = await User.findByIdAndUpdate(
+      findUser.id,
+      {
+        refreshToken: refreshToken,
+      },
+      {
+        new: true,
+      }
+    );
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 72 * 60 * 60 * 1000,
+    });
     res.json({
       _id: findUser?._id,
       firstname: findUser?.firstname,
@@ -95,7 +110,7 @@ const blockUser = asyncHandler(async (req, res) => {
   validateMongoDbId(id);
 
   try {
-    const blockusr = await User.findByIdAndUpdate(
+    const block = await User.findByIdAndUpdate(
       id,
       {
         isBlocked: true,
@@ -104,7 +119,9 @@ const blockUser = asyncHandler(async (req, res) => {
         new: true,
       }
     );
-    res.json(blockusr);
+    res.json({
+      message: "User Blocked",
+    });
   } catch (error) {
     throw new Error(error);
   }

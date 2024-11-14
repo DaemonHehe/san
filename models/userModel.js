@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const { type } = require("express/lib/response");
 
 // Declare the Schema of the Mongo model
 var userSchema = new mongoose.Schema(
@@ -40,6 +41,9 @@ var userSchema = new mongoose.Schema(
     },
     address: [{ type: mongoose.Schema.Types.ObjectId, ref: "Address" }],
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+    refreshToken: {
+      type: String
+    }
   },
   {
     timestamps: true,
