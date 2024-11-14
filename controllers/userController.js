@@ -21,7 +21,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const findUser = await User.findOne({ email });
   if (findUser && (await findUser.comparePassword(password))) {
-    const refreshToken = await generateRefreshTokenq(findUser?._id);
+    const refreshToken = await generateRefreshToken(findUser?._id);
     const updateUser = await User.findByIdAndUpdate(
       findUser.id,
       {
