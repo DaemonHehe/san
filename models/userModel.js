@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const { type } = require("express/lib/response");
 
-// Declare the Schema of the Mongo model
 var userSchema = new mongoose.Schema(
   {
     firstname: {
@@ -58,5 +57,4 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-//Export the model
 module.exports = mongoose.model("User", userSchema);
