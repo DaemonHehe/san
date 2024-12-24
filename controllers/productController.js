@@ -56,10 +56,10 @@ const getSingleProduct = asyncHandler(async (req, res) => {
 const getAllProduct = asyncHandler(async (req, res) => {
   try {
     // Filtering
-    const queryOBj = { ...req.query };
+    const queryObj = { ...req.query };
     const excludeFields = ["page", "sort", "limit", "fields"];
-    excludeFields.forEach((el) => delete queryOBj[el]);
-    let queryStr = JSON.stringify(queryOBj);
+    excludeFields.forEach((el) => delete queryObj[el]);
+    let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
     let query = Product.find(JSON.parse(queryStr));
@@ -73,7 +73,6 @@ const getAllProduct = asyncHandler(async (req, res) => {
     }
 
     // Field Limiting
-
     if (req.query.fields) {
       const fields = req.query.fields.split(",").join(" ");
       query = query.select(fields);
@@ -82,10 +81,14 @@ const getAllProduct = asyncHandler(async (req, res) => {
     }
 
     // pagination
-
     const page = req.query.page;
     const limit = req.query.limit;
     const skip = (page - 1) * limit;
+    query = query.skip(skip).limit(limit);
+    if (req.query.page) {
+      const productCount = await Product.countDocuments();
+      if (skip >= productCount) throw new Error("This page does not exist");
+    }
 
     const product = await query;
     res.json(product);
