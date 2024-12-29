@@ -1,7 +1,7 @@
-const express = require("express");
-const { createBlog, updateBlog } = require("../controllers/blogController");
-const { authMiddleware, isAdmin } = require("../middleware/authMiddleware");
-const router = express.Router();
+import { Router } from "express";
+import { createBlog, updateBlog } from "../controllers/blogController";
+import { authMiddleware, isAdmin } from "../middleware/authMiddleware";
+const router = Router();
 
 router.post("/", authMiddleware, isAdmin, createBlog);
 router.put("/:id", authMiddleware, isAdmin, updateBlog);

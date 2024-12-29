@@ -1,6 +1,6 @@
-const Product = require("../models/productModel");
-const asyncHandler = require("express-async-handler");
-const slugify = require("slugify");
+import Product from "../models/productModel";
+import asyncHandler from "express-async-handler";
+import slugify from "slugify";
 
 const createProduct = asyncHandler(async (req, res) => {
   try {
@@ -97,7 +97,7 @@ const getAllProduct = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = {
+export default {
   createProduct,
   updateProduct,
   deleteProduct,

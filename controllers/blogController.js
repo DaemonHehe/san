@@ -1,7 +1,7 @@
-const Blog = require("../models/blogModel");
-const User = require("../models/userModel");
-const asyncHandler = require("express-async-handler");
-const validateMongoDbId = require("../utils/validateMongoDbid");
+import Blog from "../models/blogModel";
+import User from "../models/userModel";
+import asyncHandler from "express-async-handler";
+import validateMongoDbId from "../utils/validateMongoDbid";
 
 const createBlog = asyncHandler(async (req, res) => {
   try {
@@ -24,4 +24,4 @@ const updateBlog = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { createBlog, updateBlog };
+export default { createBlog, updateBlog };

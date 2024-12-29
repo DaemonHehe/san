@@ -1,11 +1,11 @@
-const { generateToken } = require("../config/jwToken");
-const User = require("../models/userModel");
-const asyncHandler = require("express-async-handler");
-const validateMongoDbId = require("../utils/validateMongoDbid");
-const { generateRefreshToken } = require("../config/refreshToken");
-const jwt = require("jsonwebtoken");
-const sendEmail = require("./emailController");
-const crypto = require("crypto");
+import { generateToken } from "../config/jwToken";
+import User from "../models/userModel";
+import asyncHandler from "express-async-handler";
+import validateMongoDbId from "../utils/validateMongoDbid";
+import { generateRefreshToken } from "../config/refreshToken";
+import { verify } from "jsonwebtoken";
+import sendEmail from "./emailController";
+import { createHash } from "crypto";
 
 const createUser = asyncHandler(async (req, res) => {
   const email = req.body.email;
@@ -57,7 +57,7 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
   const refreshToken = cookie.refreshToken;
   const user = await User.findOne({ refreshToken });
   if (!user) throw new Error("No Refresh Token present in db or not matched");
-  jwt.verify(refreshToken, process.env.JWT_SECRET, (err, decoded) => {
+  verify(refreshToken, process.env.JWT_SECRET, (err, decoded) => {
     if (err || user.id !== decoded.id) {
       throw new Error("There is Something wrong with refresh token");
     }
@@ -230,7 +230,7 @@ const forgotPasswordToken = asyncHandler(async (req, res) => {
 const resetPassword = asyncHandler(async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
-  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+  const hashedToken = createHash("sha256").update(token).digest("hex");
   const user = await User.findOne({
     passwordResetToken: hashedToken,
     passwordResetExpires: { $gt: Date.now() },
@@ -243,7 +243,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   res.json({ message: "Password Reset Successfully" });
 });
 
-module.exports = {
+export default {
   createUser,
   loginUser,
   handleRefreshToken,
