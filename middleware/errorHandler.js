@@ -15,4 +15,4 @@ const errorHandler = (err, req, res, next) => {
   });
 };
 
-export default { notFound, errorHandler };
+module.exports = { notFound, errorHandler };

@@ -1,5 +1,5 @@
-import { Router } from "express";
-import {
+const express = require("express");
+const {
   createUser,
   loginUser,
   handleRefreshToken,
@@ -13,9 +13,9 @@ import {
   updatePassword,
   forgotPasswordToken,
   resetPassword,
-} from "../controllers/userController";
-const router = Router();
-import { authMiddleware, isAdmin } from "../middleware/authMiddleware";
+} = require("../controllers/userController");
+const router = express.Router();
+const { authMiddleware, isAdmin } = require("../middleware/authMiddleware");
 
 router.post("/register", createUser);
 router.put("/password", authMiddleware, updatePassword);
@@ -31,4 +31,4 @@ router.put("/edit-user", authMiddleware, updateUser);
 router.put("/block-user/:id", authMiddleware, isAdmin, blockUser);
 router.put("/unblock-user/:id", authMiddleware, isAdmin, unblockUser);
 
-export default router;
+module.exports = router;

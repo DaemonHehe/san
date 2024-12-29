@@ -1,12 +1,10 @@
-import { connect as _connect } from "mongoose";
+const mongoose = require("mongoose");
 
 const dbConnect = () => {
   try {
-    const connect = _connect(process.env.mongoDB_URL);
+    const connect = mongoose.connect(process.env.mongoDB_URL);
     console.log("Database connection successful");
   } catch (error) {
     console.log("Error");
   }
 };
-
-export default dbConnect;

@@ -1,8 +1,8 @@
-import { Schema, model } from "mongoose";
-import { genSaltSync, hash, compare } from "bcrypt";
-import { randomBytes, createHash } from "crypto";
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 
-var userSchema = new Schema(
+var userSchema = new mongoose.Schema(
   {
     firstname: {
       type: String,
@@ -38,8 +38,8 @@ var userSchema = new Schema(
       type: Array,
       default: [],
     },
-    address: [{ type: Schema.Types.ObjectId, ref: "Address" }],
-    wishlist: [{ type: Schema.Types.ObjectId, ref: "Product" }],
+    address: [{ type: mongoose.Schema.Types.ObjectId, ref: "Address" }],
+    wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
     refreshToken: {
       type: String,
     },
@@ -54,20 +54,20 @@ var userSchema = new Schema(
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
-  const salt = await genSaltSync(10);
-  this.password = await hash(this.password, salt);
+  const salt = await bcrypt.genSaltSync(10);
+  this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 userSchema.methods.comparePassword = async function (candidatePassword) {
-  return await compare(candidatePassword, this.password);
+  return await bcrypt.compare(candidatePassword, this.password);
 };
 userSchema.methods.createPasswordResetToken = async function () {
-  const resetToken = randomBytes(32).toString("hex");
-  this.passwordResetToken = createHash("sha256")
+  const resetToken = crypto.randomBytes(32).toString("hex");
+  this.passwordResetToken = crypto.createHash("sha256")
     .update(resetToken)
     .digest("hex");
   this.passwordResetExpires = Date.now() + 30 * 60 * 1000;
   return resetToken;
 };
 
-export default model("User", userSchema);
+module.exports = mongoose.model("User", userSchema);

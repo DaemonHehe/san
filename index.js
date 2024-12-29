@@ -1,21 +1,21 @@
-import express from "express";
-import dbConnect from "./config/dbConnect";
+const express = require("express");
+const dbConnect = require("./config/dbConnect");
 const app = express();
 const dotenv = require("dotenv").config();
 const PORT = process.env.PORT || 4000;
-import authRouter from "./routes/authRoute";
-import productRouter from "./routes/productRoute";
-import blogRouter from "./routes/blogRoute";
-import { json, urlencoded } from "body-parser";
-import { notFound, errorHandler } from "./middleware/errorHandler";
-import cookieParser from "cookie-parser";
-import morgan from "morgan";
+const authRouter = require("./routes/authRoute");
+const productRouter = require("./routes/productRoute");
+const blogRouter = require("./routes/blogRoute");
+const bodyParser = require("body-parser");
+const { notFound, errorHandler } = require("./middleware/errorHandler");
+const cookieParser = require("cookie-parser");
+const morgan = require("morgan");
 
 dbConnect();
 
 app.use(morgan("dev"));
-app.use(json());
-app.use(urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/api/user", authRouter);

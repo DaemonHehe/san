@@ -1,6 +1,6 @@
-import User from "../models/userModel";
-import { verify } from "jsonwebtoken";
-import asyncHandler from "express-async-handler";
+const User = require("../models/userModel");
+const jwt = require("jsonwebtoken");
+const asyncHandler = require("express-async-handler");
 
 const authMiddleware = asyncHandler(async (req, res, next) => {
   let token;
@@ -8,7 +8,7 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
     token = req.headers.authorization.split(" ")[1];
     try {
       if (token) {
-        const decoded = verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findById(decoded?.id);
         req.user = user;
         next();
@@ -31,4 +31,4 @@ const isAdmin = asyncHandler(async (req, res, next) => {
   }
 });
 
-export default { authMiddleware, isAdmin };
+module.exports = { authMiddleware, isAdmin };

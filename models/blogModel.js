@@ -1,6 +1,6 @@
-import { Schema, model } from "mongoose";
+const mongoose = require("mongoose");
 
-var blogSchema = new Schema(
+var blogSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -28,13 +28,13 @@ var blogSchema = new Schema(
     },
     likes: [
       {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],
     dislikes: [
       {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],
@@ -55,4 +55,4 @@ var blogSchema = new Schema(
   }
 );
 
-export default model("Blog", blogSchema);
+module.exports = mongoose.model("Blog", blogSchema);
